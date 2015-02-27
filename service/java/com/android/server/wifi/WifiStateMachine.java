@@ -4970,7 +4970,6 @@ public class WifiStateMachine extends StateMachine implements WifiNative.WifiPno
 
         /* Reset data structures */
         mBadLinkspeedcount = 0;
-        mWifiInfo.reset();
         linkDebouncing = false;
         /* Reset roaming parameters */
         mAutoRoaming = WifiAutoJoinController.AUTO_JOIN_IDLE;
@@ -4984,6 +4983,7 @@ public class WifiStateMachine extends StateMachine implements WifiNative.WifiPno
         fullBandConnectedTimeIntervalMilli = 20 * 1000;
 
         setNetworkDetailedState(DetailedState.DISCONNECTED);
+        mWifiInfo.reset();
         if (mNetworkAgent != null) {
             mNetworkAgent.sendNetworkInfo(mNetworkInfo);
             mNetworkAgent = null;
