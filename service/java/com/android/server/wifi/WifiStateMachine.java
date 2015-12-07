@@ -5548,6 +5548,16 @@ public class WifiStateMachine extends StateMachine implements WifiNative.WifiPno
         }
     }
 
+    void disconnectOnFrequencyBandChange() {
+        if (mNetworkInfo.isConnected()) {
+            if ((getFrequencyBand() == WifiManager.WIFI_FREQUENCY_BAND_5GHZ && mWifiInfo.is24GHz()) ||
+                    (getFrequencyBand() == WifiManager.WIFI_FREQUENCY_BAND_2GHZ && mWifiInfo.is5GHz())) {
+                mWifiNative.disconnect();
+                transitionTo(mDisconnectingState);
+            }
+        }
+    }
+
     /********************************************************
      * HSM states
      *******************************************************/
@@ -6416,6 +6426,8 @@ public class WifiStateMachine extends StateMachine implements WifiNative.WifiPno
                         if (PDBG)  logd("did set frequency band " + band);
 
                         mFrequencyBand.set(band);
+                        // disconnect AP if it is on restricted wifi band
+                        disconnectOnFrequencyBandChange();
                         // Flush old data - like scan results
                         mWifiNative.bssFlush();
                         // Fetch the latest scan results when frequency band is set
